@@ -99,6 +99,15 @@ library(quadprog)
 link <- "https://raw.githubusercontent.com/brent-halen/TSProject2016/master/reviews.csv"
 reviews <- "reviews.csv"
 download.file(link, destfile = reviews, method = "libcurl")
+link1 <- "https://raw.githubusercontent.com/williamrshepherd/TimeSeriesProject/master/data/reviews_over_time.csv"
+
+download.file(link1,destfile="actual.csv",method="libcurl")
+actual <- read.csv(file="actual.csv",header=TRUE)
+actual <- as.data.frame(actual)
+actual_forzoo <- actual
+actual_forzoo$reviewDate <- as.yearmon(actual_forzoo$reviewDate)
+actual <- zoo(actual_forzoo$reviews,actual_forzoo$reviewDate)
+
 
 #yelp =  read.zoo(file = reviews, sep = "," , FUN = as.yearmon)
 
@@ -107,9 +116,9 @@ yelp <- as.data.frame(yelp)
 yelp_forzoo <- yelp
 yelp_forzoo$reviewDate <- as.yearmon(yelp_forzoo$reviewDate)
 yelp <- zoo(yelp_forzoo$reviews,yelp_forzoo$reviewDate)
-plot.ts(yelp)
+baseplot <- autoplot.zoo(yelp)
 yelp.ts <- as.ts(yelp)
-
+baseplot
 ```
 
 #3 Model Building
@@ -285,4 +294,11 @@ kable(yelp.dec.final)
 
 
 ```
+
+
+```{r}
+prediction2.ts <- ts.union(fit_ar_f2$x,fit_ar_f2$mean)
+lower80 <- ts.union(fit_ar_f2$x,fit_ar_f2$lower[,1])
+```
+
 
